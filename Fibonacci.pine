@@ -1,0 +1,89 @@
+// This source code is subject to the terms of the Mozilla Public License 2.0 at https://mozilla.org/MPL/2.0/
+// © reees
+
+//@version=5
+
+// @description General Fibonacci functions. Get fib numbers, ratios, etc.
+library("Fibonacci",overlay=true)
+import reees/Utilities/2 as u
+
+//--------------------------------------------------------------
+//                      Private
+//--------------------------------------------------------------
+
+n50to55() =>
+    [12586269025,20365011074,32951280099,53316291173,86267571272,139583862445]
+
+//--------------------------------------------------------------
+//                      Public
+//--------------------------------------------------------------
+
+// @function Get the precise Fibonacci ratio, to the specified number of decimal places
+// @param f Fibonacci ratio (string, in form #.###)
+// @param precision Number of decimal places (optional int, dft = 16, max = 32)
+// @returns Precise Fibonacci ratio (float)
+// * Deprecated (use fib_precise() instead), but keeping it here for science / experimenting with derivations
+export fib_derived(float f, simple int precision=16) =>
+    [n0,n1,n2,n3,n4,n5] = n50to55()
+    v = switch f
+        1.618 => n5/n4
+        2.618 => n5/n3
+        4.236 => n5/n2
+        0.618 => n4/n5
+        0.382 => n3/n5
+        0.236 => n2/n5
+        0.146 => n1/n5
+        0.786 => math.sqrt(n4/n5)
+        0.886 => math.sqrt(math.sqrt(n4/n5))
+        1.272 => math.sqrt(n5/n4)
+        1.414 => math.sqrt(2)
+        => na
+    math.round(v,precision)
+
+// @function Get the precise Fibonacci ratio, to the specified number of decimal places
+// @param f Fibonacci ratio (string, in form #.###)
+// @param precision Number of decimal places (optional int, dft = 16, max = 16)
+// @returns Precise Fibonacci ratio (float)
+export fib_precise(float f, simple int precision=16) =>
+    v = switch f
+        1.618 => 1.6180339887498948
+        2.618 => 2.6180339887498948
+        4.236 => 4.2360679774997896
+        0.618 => 0.6180339887498948
+        0.382 => 0.3819660112501052
+        0.236 => 0.2360679774997897
+        0.146 => 0.1458980337503155
+        0.786 => 0.7861513777574233
+        0.886 => 0.8866517793121622
+        1.272 => 1.2720196495140689
+        1.414 => 1.4142135623730950
+        => na
+    math.round(v,precision)
+
+// @function Get fib ratio value from string
+// @param r Fib ratio string (e.g. ".618")
+// @returns Fibonacci ratio value (float)
+export fib_from_string(string r) =>
+    switch r
+        ".382" => fib_precise(0.382)
+        ".5" => .5
+        ".618" => fib_precise(0.618)
+        ".786" => fib_precise(0.786)
+        ".886" => fib_precise(0.886)
+        "1.272" => fib_precise(1.272)
+        "1.414" => fib_precise(1.414)
+        "1.618" => fib_precise(1.618)
+        "2.618" => fib_precise(2.618)
+
+//u.print(str.tostring(na(fib_from_string(".618"))))
+
+// @function Calculate the Nth number in the Fibonacci sequence
+// @param n Index/number in sequence (int)
+// @returns Fibonacci number (int)
+export fib_n(int n) =>
+    phi = fib_precise(1.618)
+    math.round((math.pow(phi,n) - math.pow(1-phi,n))/math.sqrt(5))
+    
+// test=fib_precise(1.618,32)
+// u.print(str.tostring(test,"#.################################"))
+    

@@ -1,0 +1,76 @@
+// This source code is subject to the terms of the Mozilla Public License 2.0 at https://mozilla.org/MPL/2.0/
+// © reees
+
+//@version=5
+
+// @description Trigonometric functions
+library("Trig", overlay=true)
+import reees/Algebra/3 as alg
+
+//---------------------------------------------------------------------------- 
+// Public
+//----------------------------------------------------------------------------
+
+// @function Get angle α of a right triangle, given the lengths of its sides
+// @param a length of leg a (float)
+// @param b length of leg b (float)
+// @param c length of hypotenuse (float)
+// @param deg flag to return angle in degrees (bool - default = false)
+// @returns angle α in radians (or degrees if deg == true)
+//
+export rt_get_angleAlpha(float a=0, float b=0, float c=0, simple bool deg=false) =>
+    r = if a != 0 and b != 0
+        math.atan(a/b)
+    else if a != 0 and c != 0
+        math.asin(a/c)
+    else if b != 0 and c != 0
+        math.acos(b/c)
+    else
+        0
+    deg==true ? math.todegrees(r) : r
+
+// @function Get angle α of a right triangle formed by the given line
+// @param x1 x coordinate 1 (int - optional, required if argument l is not specified)
+// @param y1 y coordinate 1 (float - optional, required if argument l is not specified)
+// @param x2 x coordinate 2 (int - optional, required if argument l is not specified)
+// @param y2 y coordinate 2 (float - optional, required if argument l is not specified)
+// @param l line object (line - optional, required if x1, y1, x2, and y2 agruments are not specified)
+// @param deg flag to return angle in degrees (bool - default = false)
+// @returns angle α in radians (or degrees if deg == true)
+//
+export rt_get_angleAlphaFromLine(int x1=0, float y1=0.0, int x2=0, float y2=0.0, line l=na, simple bool deg=false) =>
+    [a,b,c] = alg.line_getRtSides(x1,y1,x2,y2,l)
+    if a!=0 and b!=0 and c!=0
+        rt_get_angleAlpha(a,b,c,deg)
+    else
+        na
+
+// @function Get angle β of a right triangle, given the lengths of its sides
+// @param a length of leg a (float)
+// @param b length of leg b (float)
+// @param c length of hypotenuse (float)
+// @param deg flag to return angle in degrees (bool - default = false)
+// @returns angle β in radians (or degrees if deg == true)
+//
+export rt_get_angleBeta(float a=0, float b=0, float c=0, simple bool deg=false) =>
+    alpha = rt_get_angleAlpha(a,b,c,deg)
+    if deg==false
+        alpha < 0 ? math.toradians(-90) - alpha : math.toradians(90) - alpha
+    else
+        alpha < 0 ? -90 - alpha : 90 - alpha
+
+// @function Get angle β of a right triangle formed by the given line
+// @param x1 x coordinate 1 (int - optional, required if argument l is not specified)
+// @param y1 y coordinate 1 (float - optional, required if argument l is not specified)
+// @param x2 x coordinate 2 (int - optional, required if argument l is not specified)
+// @param y2 y coordinate 2 (float - optional, required if argument l is not specified)
+// @param l line object (line - optional, required if x1, y1, x2, and y2 agruments are not specified)
+// @param deg flag to return angle in degrees (bool - default = false)
+// @returns angle β in radians (or degrees if deg == true)
+//
+export rt_get_angleBetaFromLine(int x1=0, float y1=0.0, int x2=0, float y2=0.0, line l=na, simple bool deg=false) =>
+    alpha = rt_get_angleAlphaFromLine(x1,y1,x2,y2,l,deg)
+    if deg==false
+        alpha < 0 ? math.toradians(-90) - alpha : math.toradians(90) - alpha
+    else
+        alpha < 0 ? -90 - alpha : 90 - alpha
